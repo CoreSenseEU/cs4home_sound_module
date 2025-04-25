@@ -1,6 +1,6 @@
 # cs4home_sound_project
 
-Use case of the ![cs4home architecture prototype](https://github.com/CoreSenseEU/cs4home_architecture) focused on the cognitive module of sound perception.
+Use case of the [cs4home architecture prototype](https://github.com/CoreSenseEU/cs4home_architecture) focused on the cognitive module of sound perception.
 
 ## Installation
 
