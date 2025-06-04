@@ -5,6 +5,11 @@ Use case of the [cs4home architecture prototype](https://github.com/CoreSenseEU/
 ## Installation
 
 ```bash
+sudo apt install ros-humble-rclcpp-cascade-lifecycle*
+sudo apt install ros-humble-ament-cmake-clang-format
+```
+
+```bash
 cd ~/ros2_ws/src
 git clone https://github.com/CoreSenseEU/cs4home_sound_project
 vcs import --recursive < cs4home_sound_project/thirparty.repos
