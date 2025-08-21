@@ -19,6 +19,7 @@
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "sound_msgs/msg/sound_detection.hpp"
 #include "sound_msgs/msg/sound_event_detection.hpp"
+#include "std_msgs/msg/string.hpp"
 
 #include "rclcpp/macros.hpp"
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
@@ -51,16 +52,6 @@ public:
   explicit SoundRecognition(rclcpp_lifecycle::LifecycleNode::SharedPtr parent)
       : Core("sound_recognition", parent) {
     RCLCPP_DEBUG(parent_->get_logger(), "Core created: [SoundRecognition]");
-    this->sound_type_map = {{"Alarm_bell_ringing", "emergency"},
-                            {"Running_water", "supervised"},
-                            {"Frying", "supervised"},
-                            {"Dog", "supervised"},
-                            {"Cat", "supervised"},
-                            {"Vacuum_cleaner", "environment"},
-                            {"Speech", "environment"},
-                            {"Dishes", "environment"},
-                            {"Electric_shaver_toothbrush", "environment"},
-                            {"Blender", "environment"}};
     this->led_frames_ = {"led_1", "led_10", "led_11", "led_12",
                          "led_2", "led_3",  "led_4",  "led_5",
                          "led_6", "led_7",  "led_8",  "led_9"};
@@ -74,14 +65,8 @@ public:
   }
 
   std::shared_ptr<visualization_msgs::msg::Marker>
-  create_sound_marker(const geometry_msgs::msg::PoseStamped &pose,
-                      const std::string &sound_type) {
+  create_sound_marker(const geometry_msgs::msg::PoseStamped &pose) {
 
-    std::unordered_map<std::string, RGBColor> sound_color_map = {
-        {"emergency", {1.0f, 0.0f, 0.0f}},   // Red
-        {"supervised", {1.0f, 0.5f, 0.0f}},  // Orange
-        {"environment", {0.0f, 1.0f, 0.0f}}, // Green
-    };
 
     auto marker = visualization_msgs::msg::Marker();
     marker.header.frame_id = "map";
@@ -103,17 +88,9 @@ public:
     marker.scale.y = 0.5;
     marker.scale.z = 0.5;
 
-    auto it = sound_color_map.find(sound_type);
-
-    if (it != sound_color_map.end()) {
-      marker.color.r = it->second[0];
-      marker.color.g = it->second[1];
-      marker.color.b = it->second[2];
-    } else {
-      marker.color.r = 0.0;
-      marker.color.g = 0.0;
-      marker.color.b = 1.0;
-    }
+    marker.color.r = 0.0;
+    marker.color.g = 0.0;
+    marker.color.b = 1.0;
 
     marker.color.a = 0.7;
 
@@ -124,7 +101,7 @@ public:
 
   void process_audio_data(
       std::shared_ptr<geometry_msgs::msg::PoseStamped> doa_msg,
-      std::shared_ptr<sound_msgs::msg::SoundEventDetection> sed_msg) {
+      std::shared_ptr<std_msgs::msg::String> sed_msg) {
 
     double yaw_source = extract_yaw_from_pose(doa_msg->pose.orientation);
 
@@ -199,20 +176,16 @@ public:
         tf2::doTransform(sound_location, sound_location_in_map,
                          transform_mic_to_map);
 
-        efferent_->publish(1, create_sound_marker(sound_location_in_map, ""));
+        efferent_->publish(1, create_sound_marker(sound_location_in_map));
 
         auto sound_detection =
             std::make_shared<sound_msgs::msg::SoundDetection>();
 
         sound_detection->sound_location = sound_location_in_map;
 
-        sound_detection->class_name = sed_msg->class_name;
-        sound_detection->class_id = sed_msg->class_id;
-
-        auto it = sound_type_map.find(sound_detection->class_name);
-        if (it != sound_type_map.end()) {
-          sound_detection->type = it->second;
-        }
+        sound_detection->class_name = sed_msg->data;
+        sound_detection->class_id = 0;
+        sound_detection->type = "undefined";
 
         RCLCPP_INFO(parent_->get_logger(),
                     "[SoundRecognition] Event detection: %s",
@@ -242,8 +215,7 @@ public:
         tf_broadcaster_->sendTransform(sound_source_transform);
 
         this->last_check_ = now;
-        efferent_->publish(1, create_sound_marker(sound_location_in_map,
-                                                  sound_detection->type));
+        efferent_->publish(1, create_sound_marker(sound_location_in_map));
       }
     } else {
       this->last_mic_checked_ = closest_microphone;
@@ -279,7 +251,7 @@ public:
     // auto msg_audio =
     // afferent_->get_msg<audio_common_msgs::msg::AudioData>(0);
     auto msg_doa = afferent_->get_msg<geometry_msgs::msg::PoseStamped>(7);
-    auto msg_sed = afferent_->get_msg<sound_msgs::msg::SoundEventDetection>(8);
+    auto msg_sed = afferent_->get_msg<std_msgs::msg::String>(8);
 
     if (msg_doa && msg_sed) {
       RCLCPP_DEBUG(parent_->get_logger(), "[SoundRecognition] Detections");
