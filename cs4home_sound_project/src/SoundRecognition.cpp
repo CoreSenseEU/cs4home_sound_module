@@ -252,9 +252,9 @@ public:
     // afferent_->get_msg<audio_common_msgs::msg::AudioData>(0);
     auto msg_doa = afferent_->get_msg<geometry_msgs::msg::PoseStamped>(7);
     auto msg_sed = afferent_->get_msg<std_msgs::msg::String>(8);
-
+    RCLCPP_INFO(parent_->get_logger(), "[SoundRecognition] ENTRA!!");
     if (msg_doa && msg_sed) {
-      RCLCPP_DEBUG(parent_->get_logger(), "[SoundRecognition] Detections");
+      RCLCPP_INFO(parent_->get_logger(), "[SoundRecognition] Detections");
       process_audio_data(msg_doa, msg_sed);
     }
   }

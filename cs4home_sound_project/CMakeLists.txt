@@ -61,27 +61,22 @@ install(DIRECTORY
 # CORE
 add_library(sound_recognition SHARED src/SoundRecognition.cpp)
 ament_target_dependencies(sound_recognition ${dependencies} ${test_dependencies})
-target_link_libraries(sound_recognition)
 
 # AFFERENT
 add_library(audio_input SHARED src/AudioInput.cpp)
 ament_target_dependencies(audio_input ${dependencies} ${test_dependencies})
-target_link_libraries(audio_input)
 
 # EFFERENT
 add_library(audio_output SHARED src/AudioOutput.cpp)
 ament_target_dependencies(audio_output ${dependencies} ${test_dependencies})
-target_link_libraries(audio_output)
 
 # META
 add_library(audio_meta SHARED src/AudioMeta.cpp)
 ament_target_dependencies(audio_meta ${dependencies} ${test_dependencies})
-target_link_libraries(audio_meta)
 
 # COUPLING
 add_library(audio_coupling SHARED src/AudioCoupling.cpp)
 ament_target_dependencies(audio_coupling ${dependencies} ${test_dependencies})
-target_link_libraries(audio_coupling)
 
 add_executable(sound_cognitive_module src/SoundCognitiveModule.cpp)
 ament_target_dependencies(sound_cognitive_module ${dependencies})
@@ -104,7 +99,7 @@ install(TARGETS
   sound_master
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  DESTINATION lib/${PROJECT_NAME}
+  RUNTIME DESTINATION bin}
 )
 
 install(TARGETS
