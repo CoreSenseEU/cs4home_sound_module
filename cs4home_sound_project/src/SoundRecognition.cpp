@@ -101,7 +101,7 @@ public:
 
   void process_audio_data(
       std::shared_ptr<geometry_msgs::msg::PoseStamped> doa_msg,
-      std::shared_ptr<std_msgs::msg::String> sed_msg) {
+      std::shared_ptr<sound_msgs::msg::SoundEventDetection> sed_msg) {
 
     double yaw_source = extract_yaw_from_pose(doa_msg->pose.orientation);
 
@@ -183,7 +183,7 @@ public:
 
         sound_detection->sound_location = sound_location_in_map;
 
-        sound_detection->class_name = sed_msg->data;
+        sound_detection->class_name = sed_msg->class_name;
         sound_detection->class_id = 0;
         sound_detection->type = "undefined";
 
@@ -250,13 +250,23 @@ public:
     // RCLCPP_INFO(parent_->get_logger(), "Audio will be processed");
     // auto msg_audio =
     // afferent_->get_msg<audio_common_msgs::msg::AudioData>(0);
-    auto msg_doa = afferent_->get_msg<geometry_msgs::msg::PoseStamped>(7);
-    auto msg_sed = afferent_->get_msg<std_msgs::msg::String>(8);
-    RCLCPP_INFO(parent_->get_logger(), "[SoundRecognition] ENTRA!!");
-    if (msg_doa && msg_sed) {
-      RCLCPP_INFO(parent_->get_logger(), "[SoundRecognition] Detections");
-      process_audio_data(msg_doa, msg_sed);
+    //auto msg_doa = afferent_->get_msg<geometry_msgs::msg::PoseStamped>(7);
+    auto sed_msg = afferent_->get_msg<sound_msgs::msg::SoundEventDetection>(8);
+    if (sed_msg){
+      //RCLCPP_INFO(parent_->get_logger(), "[SoundRecognition] SED DETECTIONS");
+      auto doa_msg = afferent_->get_closest_msg<geometry_msgs::msg::PoseStamped>(
+                 7, sed_msg->header.stamp, TIME_SYNC_TOLERANCE);
+      if(doa_msg){
+        RCLCPP_INFO(parent_->get_logger(), "[SoundRecognition] New SED and DOA Detections");
+      process_audio_data(doa_msg, sed_msg);
+      }
     }
+
+    
+    // if (msg_doa && msg_sed) {
+    //   RCLCPP_INFO(parent_->get_logger(), "[SoundRecognition] Detections");
+    //   process_audio_data(msg_doa, msg_sed);
+    // }
   }
 
   /**
@@ -306,7 +316,7 @@ private:
   rclcpp::Time last_check_;
   const double INTERVAL_TIME = 2.0;
   const double SOUND_DISTANCE = 2.0;
-  const double TIME_SYNC_TOLERANCE = 0.1;
+  const double TIME_SYNC_TOLERANCE = 1.0;
 };
 
 /// Registers the SoundRecognition component with the ROS 2 class loader

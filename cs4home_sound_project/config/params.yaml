@@ -29,7 +29,7 @@ sound_recognition:
           "audio_common_msgs/msg/AudioData",
           "audio_common_msgs/msg/AudioData",
           "geometry_msgs/msg/PoseStamped",
-          "std_msgs/msg/String",
+          "sound_msgs/msg/SoundEventDetection",
         ]
     efferent: audio_output
     audio_output:
