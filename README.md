@@ -1,4 +1,4 @@
-# cs4home_sound_project
+# cs4home_sound_module
 
 Use case of the [cs4home architecture prototype](https://github.com/CoreSenseEU/cs4home_architecture) focused on the cognitive module of sound perception.
 
@@ -11,11 +11,11 @@ sudo apt install ros-humble-ament-cmake-clang-format
 
 ```bash
 cd ~/ros2_ws/src
-git clone https://github.com/CoreSenseEU/cs4home_sound_project
-vcs import --recursive < cs4home_sound_project/thirparty.repos
+git clone https://github.com/CoreSenseEU/cs4home_sound_module
+vcs import --recursive < cs4home_sound_module/thirparty.repos
 cd ~/ros2_ws
 colcon build --symlink-install
-ros2 launch cs4home_sound_project launch_sound.launch.py
+ros2 launch cs4home_sound_module launch_sound.launch.py
 ```
 
 ## Simulator
@@ -34,7 +34,7 @@ Each cognitive module is defined through configuration and implemented using the
 
 Edit the file:
 
-`cs4home_sound_project/config/params.yaml`
+`cs4home_sound_module/config/params.yaml`
 
 Example:
 

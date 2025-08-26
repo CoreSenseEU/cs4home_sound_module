@@ -24,7 +24,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     namespace = LaunchConfiguration('namespace')
-    pkg_dir = get_package_share_directory('cs4home_sound_project')
+    pkg_dir = get_package_share_directory('cs4home_sound_module')
 
     declare_namespace_cmd = DeclareLaunchArgument(
         'namespace',
@@ -33,7 +33,7 @@ def generate_launch_description():
 
     # Specify the actions
     cm1_cmd = Node(
-        package='cs4home_sound_project',
+        package='cs4home_sound_module',
         executable='sound_cognitive_module',
         name='sound_recognition',
         namespace=namespace,
@@ -43,7 +43,7 @@ def generate_launch_description():
         ],)
     
     m_cmd = Node(
-        package='cs4home_sound_project',
+        package='cs4home_sound_module',
         executable='sound_master',
         name='sound_master',
         namespace=namespace,
