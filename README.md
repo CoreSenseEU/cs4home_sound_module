@@ -15,7 +15,6 @@ git clone https://github.com/CoreSenseEU/cs4home_sound_module
 vcs import --recursive < cs4home_sound_module/thirparty.repos
 cd ~/ros2_ws
 colcon build --symlink-install
-ros2 launch cs4home_sound_module launch_sound.launch.py
 ```
 
 ## Docker 
@@ -40,6 +39,13 @@ rocker --nvidia --x11 \
   --volume ~/cyclone_config.xml:/root/cyclone_config.xml:ro \
   --privileged \
  llama_ros
+```
+
+## Launch
+
+```bash
+ros2 llama launch /root/ros2_ws/src/llama_bringup/models/Qwen2-Audio.yaml
+ros2 launch cs4home_sound_module launch_sound.launch.py
 ```
 
 ## Simulator
