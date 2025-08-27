@@ -1,6 +1,6 @@
 # cs4home_sound_module
 
-Use case of the [cs4home architecture prototype](https://github.com/CoreSenseEU/cs4home_architecture) focused on the cognitive module of sound perception.
+Use case of the [cs4home architecture prototype](https://github.com/CoreSenseEU/cs4home_architecture) focused on the cognitive module of sound perception with [llama_ros](https://github.com/mgonzs13/llama_ros/tree/humble?tab=readme-ov-file)
 
 ## Installation
 
@@ -16,6 +16,30 @@ vcs import --recursive < cs4home_sound_module/thirparty.repos
 cd ~/ros2_ws
 colcon build --symlink-install
 ros2 launch cs4home_sound_module launch_sound.launch.py
+```
+
+## Docker 
+Build the llama_ros docker or download and image from [DockerHub](https://hub.docker.com/r/mgons/llama_ros/tags). You can choose to build llama_ros with CUDA (USE_CUDA) and choose the CUDA version (CUDA_VERSION). Remember that you have to use DOCKER_BUILDKIT=0 to compile llama_ros with CUDA when building the image.
+
+
+```bash
+DOCKER_BUILDKIT=0 docker build -t llama_ros --build-arg USE_CUDA=1 --build-arg CUDA_VERSION=12-6 .
+```
+
+Run the docker container with [Rocker](https://github.com/osrf/rocker)
+
+```bash
+cd ~/ros2_ws/src/cs4home_vision_module
+rocker --nvidia --x11 \
+  --network host --ipc host \
+  --device /dev/snd \
+  --device /dev/bus/usb/005/005 \
+  --group-add audio \
+  --volume ~/audio_ws:/root/ros2_ws \
+  --env CYCLONEDDS_URI=file:///root/cyclone_config.xml \
+  --volume ~/cyclone_config.xml:/root/cyclone_config.xml:ro \
+  --privileged \
+ llama_ros
 ```
 
 ## Simulator
