@@ -22,6 +22,7 @@ find_package(visualization_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(cs4home_msgs REQUIRED)
 
 
 set(dependencies
@@ -40,6 +41,7 @@ set(dependencies
   yolo_msgs
   std_msgs
   visualization_msgs
+  cs4home_msgs
 )
 
 set(SOURCES

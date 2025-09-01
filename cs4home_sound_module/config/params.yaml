@@ -34,6 +34,6 @@ sound_recognition:
     efferent: audio_output
     audio_output:
       topics: ["/sound_detection", "sound_markers"]
-      types: ["sound_msgs/msg/SoundDetection", "visualization_msgs/msg/Marker"]
+      types: ["cs4home_msgs/msg/ContextDescription", "visualization_msgs/msg/Marker"]
     meta: audio_meta
     coupling: audio_coupling

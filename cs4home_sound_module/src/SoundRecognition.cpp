@@ -20,6 +20,8 @@
 #include "sound_msgs/msg/sound_detection.hpp"
 #include "sound_msgs/msg/sound_event_detection.hpp"
 #include "std_msgs/msg/string.hpp"
+#include "cs4home_msgs/msg/context_description.hpp"
+#include "cs4home_msgs/msg/entity.hpp"
 
 #include "rclcpp/macros.hpp"
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
@@ -178,29 +180,37 @@ public:
 
         efferent_->publish(1, create_sound_marker(sound_location_in_map));
 
-        auto sound_detection =
-            std::make_shared<sound_msgs::msg::SoundDetection>();
+        // auto sound_detection =
+        //     std::make_shared<sound_msgs::msg::SoundDetection>();
 
-        sound_detection->sound_location = sound_location_in_map;
+        auto sound_context = std::make_shared<cs4home_msgs::msg::ContextDescription>();
+        sound_context->source = "audio";
+        
+        cs4home_msgs::msg::Entity entity;
+        entity.location = sound_location_in_map.pose;
+        sound_context->entities.push_back(entity);
+        sound_context->scene_description = sed_msg->class_name;
 
-        sound_detection->class_name = sed_msg->class_name;
-        sound_detection->class_id = 0;
-        sound_detection->type = "undefined";
+        // sound_detection->sound_location = sound_location_in_map;
+
+        // sound_detection->class_name = sed_msg->class_name;
+        // sound_detection->class_id = 0;
+        // sound_detection->type = "undefined";
 
         RCLCPP_INFO(parent_->get_logger(),
                     "[SoundRecognition] Event detection: %s",
-                    sound_detection->class_name.c_str());
+                    sound_context->scene_description.c_str());
 
         // this->tf_broadcaster_->sendTransform(sound_source_transform);
         RCLCPP_INFO(parent_->get_logger(),
                     "[SoundRecognition] Publish Efferent");
 
-        efferent_->publish(0, sound_detection);
+        efferent_->publish(0, sound_context);
 
         geometry_msgs::msg::TransformStamped sound_source_transform;
         sound_source_transform.header.stamp = parent_->get_clock()->now();
         sound_source_transform.header.frame_id = "map";
-        sound_source_transform.child_frame_id = sound_detection->class_name;
+        sound_source_transform.child_frame_id = sound_context->scene_description;
 
         sound_source_transform.transform.translation.x =
             sound_location_in_map.pose.position.x;
