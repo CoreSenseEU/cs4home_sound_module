@@ -97,3 +97,17 @@ void process() override {
 ```
 
 Each component is managed as a ROS 2 Lifecycle Node and instantiated according to the YAML configuration.
+
+## Demos
+
+### Demo 1: Supervised sound (normal situation)
+
+![Demo1](docs/frying_assist_pipeline_real.gif)
+
+### Demo 2: Supervised sound (emergency)
+
+![Demo2](docs/frying_emergency_pipeline_real.gif)
+
+### Demo 3: Emergency sound
+
+![Demo3](docs/alarm_emergency_pipeline_real.gif)
