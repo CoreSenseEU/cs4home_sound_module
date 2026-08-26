@@ -2,29 +2,39 @@
 
 Use case of the [cs4home architecture prototype](https://github.com/CoreSenseEU/cs4home_architecture) focused on the cognitive module of sound perception.
 
+## CoreSense role
+
+The terms below follow the [CoreSense Ontology (CSO)](https://w3id.org/coresense/cso).
+
+- Microphones are [Sensors](https://w3id.org/coresense/cso#Sensor) that acquire audio and direction-of-arrival information.
+- Sound recognition and sound-context evaluation are [Cognitive Functions](https://w3id.org/coresense/cso#CognitiveFunction).
+- They provide [Cognitive Capabilities](https://w3id.org/coresense/cso#CognitiveCapability) for sound awareness and context-sensitive response.
+- Audio and visual evidence form the relevant [Context](https://w3id.org/coresense/cso#Context).
+- Behaviour trees select [Actions](https://w3id.org/coresense/cso#Action) in support of assistance and safety [Goals](https://w3id.org/coresense/cso#Goal).
+
 ## Installation
 
-```bash
+~~~bash
 sudo apt install ros-humble-rclcpp-cascade-lifecycle*
 sudo apt install ros-humble-ament-cmake-clang-format
-```
+~~~
 
-```bash
+~~~bash
 cd ~/ros2_ws/src
-git clone https://github.com/CoreSenseEU/cs4home_sound_project
+git clone https://github.com/CoreSenseEU/cs4home_sound_module.git cs4home_sound_project
 vcs import --recursive < cs4home_sound_project/thirparty.repos
 cd ~/ros2_ws
 colcon build --symlink-install
 ros2 launch cs4home_sound_project launch_sound.launch.py
-```
+~~~
 
 ## Simulator
 
 If needed, you can use the RB1 robot simulation:
 
-```bash
-git clone -b mic-array-urdf https://github.com/igonzf/ros2_rb1.git
-```
+~~~bash
+git clone https://github.com/igonzf/ros2_rb1.git
+~~~
 
 ## Creating a Cognitive Module
 
@@ -38,7 +48,7 @@ Edit the file:
 
 Example:
 
-```yaml
+~~~yaml
 sound_recognition:
   ros_parameters:
     core: sound_context_evaluation
@@ -53,7 +63,7 @@ sound_recognition:
       types: ["sound_msgs/msg/SoundContext", "visualization_msgs/msg/Marker"]
     meta: sound_meta
     coupling: sound_coupling
-```
+~~~
 
 Fields:
 
@@ -65,17 +75,17 @@ Fields:
 
 ### 2. Implement the Module
 
-Create a class that inherits from cs4home_core::CognitiveModule:
+Create a class that inherits from `cs4home_core::CognitiveModule`:
 
-```cpp
+~~~cpp
 class SoundModuleCognitive : public cs4home_core::CognitiveModule {
 // Instantiate lifecycle components here
 };
-```
+~~~
 
 Define each component as a subclass:
 
-```cpp
+~~~cpp
 class AudioInput : public cs4home_core::Afferent {};
 class AudioOutput : public cs4home_core::Efferent {};
 class DefaultCoupling : public cs4home_core::Coupling {};
@@ -94,7 +104,7 @@ void process() override {
 
 }
 };
-```
+~~~
 
 Each component is managed as a ROS 2 Lifecycle Node and instantiated according to the YAML configuration.
 
